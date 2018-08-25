@@ -27,6 +27,8 @@ namespace BernHacktTagging
 
         public static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
             //// Create a client.
             var client = ElasticSearchFactory.GetClient();
 
@@ -35,12 +37,27 @@ namespace BernHacktTagging
                 AzureRegion = AzureRegions.Westcentralus // example 
             };
 
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            var countResponse = client.Count<Stiftung>();
+            var count = countResponse.Count;
 
-            // so oft wiederholen wie nötig
+            var searchSize = 100;
+            var searchStart = 0;
+
+            do
+            {
+                UpdateFoundationsTags(searchStart, searchSize, client, textAnalyticsClient);
+                searchStart += searchSize;
+            }
+            while (searchStart < count);
+
+            Console.ReadLine();
+        }
+
+        private static void UpdateFoundationsTags(int searchStart, int searchSize, Nest.ElasticClient client, TextAnalyticsAPI textAnalyticsClient)
+        {
             var searchResponse = client.Search<Stiftung>(s => s
-                .From(0)
-                .Size(100)
+                .From(searchStart)
+                .Size(searchSize)
             );
 
             var stiftungen = searchResponse.Documents;
@@ -72,8 +89,6 @@ namespace BernHacktTagging
 
                 client.IndexDocument(stiftung);
             }
-
-            Console.ReadLine();
         }
         
         private static List<MultiLanguageInput> GetPurposeDescriptionsAsMultiLanguageInput(TextAnalyticsAPI client, IReadOnlyCollection<Stiftung> stiftungen)
