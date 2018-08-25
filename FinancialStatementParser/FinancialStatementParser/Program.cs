@@ -29,8 +29,9 @@ namespace FinancialStatementParser
                 {
                     stiftung.bilanzsumme = result.BalanceSheetTotal;
                     stiftung.jahresbericht = result.FinancialStatementUrl.AbsoluteUri;
+                    stiftung.timestamp = DateTime.Now;
 
-                    //client.Update();
+                    client.IndexDocument(stiftung);
                 }
             }
 
@@ -70,7 +71,7 @@ namespace FinancialStatementParser
                     Success = true
                 };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new FoundationResult { Success = false };
             }
