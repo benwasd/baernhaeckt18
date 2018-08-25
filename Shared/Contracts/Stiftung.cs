@@ -1,4 +1,5 @@
 ﻿using System;
+using Nest;
 
 namespace Contracts
 {
@@ -7,11 +8,16 @@ namespace Contracts
         public Stiftung()
         {
             this.id = Guid.NewGuid();
+            this.timestamp = DateTime.Now;
         }
 
         public Guid id { get; set; }
 
+        public string sourceId { get; set; }
+
         public string name { get; set; }
+
+        public string nameshort { get; set; }
 
         public string zweck { get; set; }
 
@@ -30,5 +36,8 @@ namespace Contracts
         public string handelsregisterAmt { get; set; }
 
         public string url { get; set; }
+
+        [Date(Name = "@timestamp")]
+        public DateTime timestamp { get; set; }
     }
 }

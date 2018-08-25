@@ -17,7 +17,7 @@ namespace Contracts
         {
             var connection = new ConnectionSettings(new Uri("http://lb-agxv47bobldeo.westeurope.cloudapp.azure.com:9200/"));
             connection.BasicAuthentication("elastic", "Abc1234VUnit");
-            connection.DefaultMappingFor<Stiftung>(s => s.IndexName("stiftungen"));
+            connection.DefaultMappingFor<Stiftung>(m => m.IndexName("stiftungen").IdProperty(s => s.id));
 
             return new ElasticClient(connection);
         }

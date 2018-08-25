@@ -30,7 +30,7 @@ namespace FinancialStatementParser
             }*/
 
             // Manual:
-            var rega = ProcessFoundation("Rega", 2017, "rega.ch");
+            // var rega = ProcessFoundation("Rega", 2017, "rega.ch");
             // var eichholz = ProcessFoundation("Eichholz", 2017, "stiftung-eichholz.ch");
             // var sieber = ProcessFoundation("Pfarrer Sieber", 2017, "swsieber.ch");
             // var hmsg = ProcessFoundation("HMSG", 2017, "hmsg.ch");
