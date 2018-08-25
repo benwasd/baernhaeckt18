@@ -11,7 +11,7 @@ namespace FinancialStatementParser
         {
             Initialize();
 
-            var client = ElasticSearchFactory.GetClient();
+            /*var client = ElasticSearchFactory.GetClient();
 
             var searchResponse = client.Search<Stiftung>(s => s
                 .From(0)
@@ -27,10 +27,10 @@ namespace FinancialStatementParser
 
                 stiftung.bilanzsumme = 0;
                 stiftung.jahresbericht = "https://stiftung.com/2017/jahresrechnung.pdf";
-            }
+            }*/
 
             // Manual:
-            // var rega = ProcessFoundation("Rega", 2017, "rega.ch");
+            var rega = ProcessFoundation("Rega", 2017, "rega.ch");
             // var eichholz = ProcessFoundation("Eichholz", 2017, "stiftung-eichholz.ch");
             // var sieber = ProcessFoundation("Pfarrer Sieber", 2017, "swsieber.ch");
             // var hmsg = ProcessFoundation("HMSG", 2017, "hmsg.ch");
