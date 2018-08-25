@@ -1,4 +1,7 @@
-﻿using Zefix.ZefixReference;
+﻿using System;
+using System.ServiceModel;
+using System.Threading;
+using Zefix.ZefixReference;
 
 namespace Zefix
 {
@@ -11,7 +14,20 @@ namespace Zefix
             client.ClientCredentials.UserName.Password = "Password";
 
             var companyName = GetNameForSearch(name);
-            var response = client.SearchByName(new searchByNameRequest { name = companyName });
+            shortResponse response = null;
+            try
+            {
+                response = client.SearchByName(new searchByNameRequest { name = companyName });
+            }
+            catch (ProtocolException e)
+            {
+                Console.WriteLine($"Exception occured during search for '{companyName}'");
+                Console.WriteLine(e);
+                Thread.Sleep(5000);
+
+                return null;
+            }
+            
             var result = response.Item as shortResponseResult;
             if (result?.companyInfo == null || result.companyInfo.Length <= 0)
             {
@@ -46,7 +62,7 @@ namespace Zefix
                 name = name.Substring(0, bracketPosition);
             }
 
-            return name;
+            return name.Trim();
         }
     }
 }
