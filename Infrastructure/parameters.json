@@ -1,0 +1,186 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "esVersion": {
+            "value": "6.3.1"
+        },
+        "esClusterName": {
+            "value": "baernhaeckt"
+        },
+        "azureCloudPlugin": {
+            "value": "No"
+        },
+        "azureCloudStorageAccountName": {
+            "value": ""
+        },
+        "azureCloudStorageAccountKey": {
+            "value": null
+        },
+        "xpackPlugins": {
+            "value": "Yes"
+        },
+        "esAdditionalPlugins": {
+            "value": ""
+        },
+        "esAdditionalYaml": {
+            "value": ""
+        },
+        "esHttpCertBlob": {
+            "value": ""
+        },
+        "esHttpCertPassword": {
+            "value": null
+        },
+        "esHttpCaCertBlob": {
+            "value": ""
+        },
+        "esHttpCaCertPassword": {
+            "value": null
+        },
+        "esTransportCaCertBlob": {
+            "value": ""
+        },
+        "esTransportCaCertPassword": {
+            "value": null
+        },
+        "esTransportCertPassword": {
+            "value": null
+        },
+        "samlMetadataUri": {
+            "value": ""
+        },
+        "samlServiceProviderUri": {
+            "value": ""
+        },
+        "esHeapSize": {
+            "value": 0
+        },
+        "loadBalancerType": {
+            "value": "internal"
+        },
+        "vNetNewOrExisting": {
+            "value": "new"
+        },
+        "vNetName": {
+            "value": "es-net"
+        },
+        "vNetClusterSubnetName": {
+            "value": "es-subnet"
+        },
+        "vNetLoadBalancerIp": {
+            "value": "10.0.0.4"
+        },
+        "vNetExistingResourceGroup": {
+            "value": "baernhaeckt"
+        },
+        "vNetNewAddressPrefix": {
+            "value": "10.0.0.0/24"
+        },
+        "vNetNewClusterSubnetAddressPrefix": {
+            "value": "10.0.0.0/25"
+        },
+        "vNetAppGatewaySubnetName": {
+            "value": "es-gateway-subnet"
+        },
+        "vNetNewAppGatewaySubnetAddressPrefix": {
+            "value": "10.0.0.128/28"
+        },
+        "kibana": {
+            "value": "Yes"
+        },
+        "vmSizeKibana": {
+            "value": "Standard_DS2_v2"
+        },
+        "kibanaKeyBlob": {
+            "value": null
+        },
+        "kibanaCertBlob": {
+            "value": ""
+        },
+        "kibanaKeyPassphrase": {
+            "value": null
+        },
+        "kibanaAdditionalYaml": {
+            "value": ""
+        },
+        "jumpbox": {
+            "value": "No"
+        },
+        "vmSizeDataNodes": {
+            "value": "Standard_DS2_v2"
+        },
+        "vmDataDiskCount": {
+            "value": 1
+        },
+        "vmDataDiskSize": {
+            "value": "Small"
+        },
+        "vmDataNodeCount": {
+            "value": 1
+        },
+        "storageAccountType": {
+            "value": "Default"
+        },
+        "dataNodesAreMasterEligible": {
+            "value": "Yes"
+        },
+        "vmHostNamePrefix": {
+            "value": "bhcn"
+        },
+        "vmClientNodeCount": {
+            "value": 0
+        },
+        "adminUsername": {
+            "value": "baernhaeckt"
+        },
+        "authenticationType": {
+            "value": "password"
+        },
+        "adminPassword": {
+            "value": null
+        },
+        "securityBootstrapPassword": {
+            "value": null
+        },
+        "securityAdminPassword": {
+            "value": null
+        },
+        "securityReadPassword": {
+            "value": null
+        },
+        "securityKibanaPassword": {
+            "value": null
+        },
+        "securityLogstashPassword": {
+            "value": null
+        },
+        "appGatewayTier": {
+            "value": "Standard"
+        },
+        "appGatewaySku": {
+            "value": "Small"
+        },
+        "appGatewayCount": {
+            "value": 1
+        },
+        "appGatewayCertBlob": {
+            "value": ""
+        },
+        "appGatewayCertPassword": {
+            "value": null
+        },
+        "appGatewayEsHttpCertBlob": {
+            "value": ""
+        },
+        "appGatewayWafStatus": {
+            "value": "Disabled"
+        },
+        "appGatewayWafMode": {
+            "value": "Detection"
+        },
+        "location": {
+            "value": "westeurope"
+        }
+    }
+}
