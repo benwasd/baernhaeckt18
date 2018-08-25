@@ -23,7 +23,7 @@ namespace StiftungFileImporter
             var browserManualResetEvent = new ManualResetEvent(false);
             var elasticClient = ElasticSearchFactory.GetClient();
 
-            var stiftungen = elasticClient.Search<Stiftung>(s => s.From(0));
+            var stiftungen = elasticClient.Search<Stiftung>(s => s.Size(5000));
 
             foreach (var stiftung in stiftungen.Documents)
             {
