@@ -14,7 +14,7 @@ namespace Zefix
 
             //var response = client.GetByUidFull(new getByUidRequestType { uid = "110389869" });
             var response = client.SearchByName(new searchByNameRequest {name = name});
-            var result = response.Item as Zefix.ZefixReference.shortResponseResult;
+            var result = response.Item as shortResponseResult;
             if (result == null || result.companyInfo.Length <= 0)
             {
                 return null;
@@ -25,6 +25,7 @@ namespace Zefix
             return new CompanyInfo
             {
                 LegalSeatId = company.legalSeatId,
+                RegisterOfficeId = company.registerOfficeId,
                 Uid = company.uid,
                 ChId = company.chid
             };
