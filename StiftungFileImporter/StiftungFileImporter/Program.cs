@@ -18,9 +18,13 @@ namespace StiftungFileImporter
         static void Main(string[] args)
         {
             //var address = "https://be.chregister.ch/cr-portal/auszug/zefix.xhtml?uid=110389869&lang=de";
-            var address = "https://be.chregister.ch/cr-portal/auszug/auszug.xhtml?uid=CHE-105.830.305";
+            //var address = "https://be.chregister.ch/cr-portal/auszug/auszug.xhtml?uid=CHE-105.830.305";
 
-            
+
+            var zefix = new ZefixSrv();
+            var companyInfo = zefix.FindByName("\"Bibliomedia Schweiz - öffentliche Stiftung\" (BMS)");
+
+            var address = HrgUrlHelper.GetQueryUrl(companyInfo);
 
             //var client = new HttpClient();
             //var response = client.GetAsync(address).Result;
@@ -39,7 +43,7 @@ namespace StiftungFileImporter
             //    s.IsResourceLoadingEnabled = false;
             //});
 
-            
+
         }
     }
 }
