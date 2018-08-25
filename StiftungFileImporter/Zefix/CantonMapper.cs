@@ -46,7 +46,7 @@ namespace Zefix
         {
             if (!string.IsNullOrWhiteSpace(canton))
             {
-                return $"CH-{canton}";
+                return $"CH-{canton}".ToUpper();
             }
 
             return string.Empty;
