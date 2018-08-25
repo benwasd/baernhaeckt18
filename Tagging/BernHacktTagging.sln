@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BernHacktTagging", "BernHacktTagging\BernHacktTagging.csproj", "{67C27CBD-82D0-4655-B9EF-16BB4D2BCF85}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contracts", "..\Shared\Contracts\Contracts.csproj", "{234D1180-F50E-45DB-BF19-05E3116753A2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{67C27CBD-82D0-4655-B9EF-16BB4D2BCF85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67C27CBD-82D0-4655-B9EF-16BB4D2BCF85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67C27CBD-82D0-4655-B9EF-16BB4D2BCF85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67C27CBD-82D0-4655-B9EF-16BB4D2BCF85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{234D1180-F50E-45DB-BF19-05E3116753A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{234D1180-F50E-45DB-BF19-05E3116753A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{234D1180-F50E-45DB-BF19-05E3116753A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{234D1180-F50E-45DB-BF19-05E3116753A2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A0790D2B-3194-4519-AFB7-FD4C24B5C8D9}
+	EndGlobalSection
+EndGlobal
