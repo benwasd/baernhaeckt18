@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Mime;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using AngleSharp;
 using AngleSharp.Parser.Html;
 using CefSharp;
@@ -20,78 +13,86 @@ namespace StiftungFileImporter
     {
         static void Main(string[] args)
         {
-            //var address = "https://be.chregister.ch/cr-portal/auszug/zefix.xhtml?uid=110389869&lang=de";
-            //var address = "https://be.chregister.ch/cr-portal/auszug/auszug.xhtml?uid=CHE-105.830.305";
-
             var zefix = new ZefixSrv();
             Cef.Initialize();
+            var browser = new ChromiumWebBrowser();
 
-            var companyNames = new [] {"\"Bibliomedia Schweiz - öffentliche Stiftung\" (BMS)"};
+            var companyNames = new[]
+            {
+                "\"Bibliomedia Schweiz - öffentliche Stiftung\" (BMS)",
+                "Schweizerische Stiftung für Alpine Forschungen", "Pro Silva Helvetica"
+            };
+            var x = new System.Threading.ManualResetEvent(false);
 
             foreach (var companyName in companyNames)
             {
                 var companyInfo = zefix.FindByName(companyName);
+                if (companyInfo == null)
+                {
+                    Console.WriteLine($"Nothing found for '{companyName}'");
+                    continue;
+                }
 
-                var address = HrgUrlHelper.GetQueryUrl(companyInfo);
-
-                var browser = new ChromiumWebBrowser(address);
-                browser.LoadingStateChanged += async (sender, e) =>
+                EventHandler<LoadingStateChangedEventArgs> loadedStateChanged = async (sender, e) =>
                 {
                     if (e.IsLoading)
                     {
                         return;
                     }
 
+                    Console.WriteLine($"Loading for company '{companyName}'");
                     await Task.Delay(5000);
 
                     var sourceVisitor = new TaskStringVisitor();
                     browser.GetMainFrame().GetSource(sourceVisitor);
 
                     var siteSource = await sourceVisitor.Task;
-                    browser.Dispose();
 
                     // AngleSharp
                     var config = Configuration.Default.WithCss();
                     var parser = new HtmlParser(config);
                     var document = parser.Parse(siteSource);
 
-                    foreach (var element in document.QuerySelector(".personen tbody").Children)
+                    var tbody = document.QuerySelector(".personen tbody");
+                    if (tbody != null)
                     {
-                        // unexpected row content or cancelled person
-                        if (element.ChildElementCount != 6 || element.Children.Any(ce => ce.ClassList.Contains("strike"))
-                            )
+                        foreach (var element in tbody.Children)
                         {
-                            continue;
-                        }
+                            // unexpected row content or cancelled person
+                            if (element.ChildElementCount != 6 ||
+                                element.Children.Any(ce => ce.ClassList.Contains("strike")))
+                            {
+                                continue;
+                            }
 
-                        var person = element.Children[3].TextContent;
-                        var function = element.Children[4].TextContent;
-                        var permission = element.Children[5].TextContent;
+                            var person = element.Children[3].TextContent;
+                            var function = element.Children[4].TextContent;
+                            var permission = element.Children[5].TextContent;
 
-                        if (function == "auditor")
-                        {
-                            // Could be a company
+                            Console.WriteLine($"person: {person}; function: {function}; permission: {permission}");
+
+                            if (function == "auditor")
+                            {
+                                // Could be a company
+                            }
                         }
                     }
+
+                    x.Set();
                 };
 
-                Console.ReadKey();
+                browser.LoadingStateChanged += loadedStateChanged;
+
+                var address = HrgUrlHelper.GetQueryUrl(companyInfo);
+                browser.Load(address);
+
+                x.WaitOne();
+                x.Reset();
+
+                browser.LoadingStateChanged -= loadedStateChanged;
             }
 
             Cef.Shutdown();
-
-            //var client = new HttpClient();
-            //var response = client.GetAsync(address).Result;
-
-            //if (response.StatusCode == HttpStatusCode.OK)
-            //{
-            //    var body = response.Content.ReadAsStringAsync().Result;
-
-            //}
-
-
-            
-
         }
     }
 }
