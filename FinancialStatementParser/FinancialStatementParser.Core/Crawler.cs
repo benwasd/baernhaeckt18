@@ -19,6 +19,11 @@ namespace FinancialStatementParser.Core
             using (var webClient = new WebClient())
             {
                 var searchUri = host == null ? $"https://www.google.ch/search?q={foundation}+pdf+jahresrechnung+{year}" : $"https://www.google.ch/search?q=site:{host}+pdf+jahresrechnung+{year}";
+                if (!foundation.ToLower().Contains("wwf"))
+                {
+                    searchUri += "+-wwf";
+                }
+
                 var pageString = webClient.DownloadString(searchUri);
 
                 var uris =

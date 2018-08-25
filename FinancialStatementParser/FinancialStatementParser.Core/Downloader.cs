@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.IO;
 using System.Net;
 using System.Threading;
 
@@ -8,7 +7,7 @@ namespace FinancialStatementParser.Core
 {
     public class Downloader
     {
-        public static void Download(string urlToPdf, string targetFolder, string fileName)
+        public static void Download(string urlToPdf, string targetFileName)
         {
             using (var client = new WebClient())
             {
@@ -17,7 +16,7 @@ namespace FinancialStatementParser.Core
                 var syncObject = new Object();
                 lock (syncObject)
                 {
-                    client.DownloadFileAsync(new Uri(urlToPdf), targetFolder + Path.DirectorySeparatorChar + fileName, syncObject);
+                    client.DownloadFileAsync(new Uri(urlToPdf), targetFileName, syncObject);
                     //This would block the thread until download completes
                     Monitor.Wait(syncObject);
                 }
