@@ -1,6 +1,7 @@
 ﻿using System;
 using Contracts;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace FoundationCsvReader
