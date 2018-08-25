@@ -28,5 +28,7 @@ namespace Contracts
         public string handelsregisterCHNR { get; set; }
 
         public string handelsregisterAmt { get; set; }
+
+        public string url { get; set; }
     }
 }
