@@ -8,6 +8,7 @@ using AngleSharp.Parser.Html;
 using CefSharp;
 using CefSharp.OffScreen;
 using Contracts;
+using Nest;
 using Zefix;
 
 namespace StiftungFileImporter
@@ -22,7 +23,7 @@ namespace StiftungFileImporter
             var browserManualResetEvent = new ManualResetEvent(false);
             var elasticClient = ElasticSearchFactory.GetClient();
 
-            var stiftungen = elasticClient.Search<Stiftung>();
+            var stiftungen = elasticClient.Search<Stiftung>(s => s.From(0));
 
             foreach (var stiftung in stiftungen.Documents)
             {
@@ -36,10 +37,14 @@ namespace StiftungFileImporter
                     continue;
                 }
 
-                stiftung.handelsregisterUID = companyInfo.Uid;
-                stiftung.handelsregisterCHNR = companyInfo.ChId;
-                stiftung.handelsregisterAmt = companyInfo.RegisterOfficeId;
-                stiftung.kanton = companyInfo.CantonIso;
+                var newStiftung = new Stiftung
+                {
+                    id = stiftung.id,
+                    handelsregisterUID = companyInfo.Uid,
+                    handelsregisterCHNR = companyInfo.ChId,
+                    handelsregisterAmt = companyInfo.RegisterOfficeId,
+                    kanton = companyInfo.CantonIso
+                };
 
                 var hadDelay = false;
 
@@ -93,7 +98,7 @@ namespace StiftungFileImporter
 
                         }
 
-                        stiftung.stiftungsratsmitglieder = members.ToArray();
+                        newStiftung.stiftungsratsmitglieder = members.ToArray();
                     }
 
                     browserManualResetEvent.Set();
@@ -114,11 +119,15 @@ namespace StiftungFileImporter
                     Thread.Sleep(5000);
                 }
 
-                stiftung.timestamp = DateTime.Now;
-                elasticClient.IndexDocument(stiftung);
+                newStiftung.timestamp = DateTime.Now;
+                elasticClient.Update(new DocumentPath<Stiftung>(stiftung.id), u => u.Doc(newStiftung));
             }
 
             Cef.Shutdown();
+
+            Console.WriteLine();
+            Console.WriteLine("FINISHED :-)");
+            Console.ReadKey();
         }
     }
 }
