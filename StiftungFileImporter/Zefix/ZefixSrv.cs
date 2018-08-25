@@ -6,13 +6,13 @@ namespace Zefix
     {
         public CompanyInfo FindByName(string name)
         {
-            var client = new ZefixReference.ZefixServicePortTypeClient();
+            var client = new ZefixServicePortTypeClient();
             client.ClientCredentials.UserName.UserName = "UserName";
             client.ClientCredentials.UserName.Password = "Password";
 
             var response = client.SearchByName(new searchByNameRequest {name = name});
             var result = response.Item as shortResponseResult;
-            if (result == null || result.companyInfo.Length <= 0)
+            if (result?.companyInfo == null || result.companyInfo.Length <= 0)
             {
                 return null;
             }
