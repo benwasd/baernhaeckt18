@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:eCH-0097="http://www.ech.ch/xmlns/eCH-0097/2" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.ech.ch/xmlns/eCH-0097/2" version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:annotation>
+    <xs:documentation xml:lang="de">Ausgabedatum: 05.07.2013</xs:documentation>
+  </xs:annotation>
+  <xs:simpleType name="organisationIdCategoryType">
+    <xs:restriction base="xs:token">
+      <xs:maxLength value="20" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="organisationIdentificationType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="uid" type="eCH-0097:uidStructureType" />
+      <xs:element name="localOrganisationId" type="eCH-0097:namedOrganisationIdType" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="OtherOrganisationId" type="eCH-0097:namedOrganisationIdType" />
+      <xs:element name="organisationName" type="eCH-0097:organisationNameType" />
+      <xs:element minOccurs="0" name="organisationLegalName" type="eCH-0097:organisationNameType" />
+      <xs:element minOccurs="0" name="organisationAdditionalName" type="eCH-0097:organisationNameType" />
+      <xs:element minOccurs="0" name="legalForm" type="eCH-0097:legalFormType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="namedOrganisationIdType">
+    <xs:sequence>
+      <xs:element name="organisationIdCategory">
+        <xs:simpleType>
+          <xs:restriction base="eCH-0097:organisationIdCategoryType">
+            <xs:minLength value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="organisationId">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:maxLength value="20" />
+            <xs:minLength value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="uidStructureType">
+    <xs:sequence>
+      <xs:element name="uidOrganisationIdCategorie" type="eCH-0097:uidOrganisationIdCategorieType" />
+      <xs:element name="uidOrganisationId" type="eCH-0097:uidOrganisationIdType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="uidOrganisationIdCategorieType">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="3" />
+      <xs:minLength value="3" />
+      <xs:enumeration value="CHE" />
+      <xs:enumeration value="ADM" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="uidOrganisationIdType">
+    <xs:restriction base="xs:nonNegativeInteger">
+      <xs:totalDigits value="9" />
+      <xs:fractionDigits value="0" />
+      <xs:minInclusive value="000000001" />
+      <xs:maxInclusive value="999999999" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="organisationNameType">
+    <xs:restriction base="xs:token">
+      <xs:maxLength value="255" />
+      <xs:minLength value="1" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="legalFormType">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="2" />
+      <xs:maxLength value="4" />
+      <xs:pattern value="\d{2,4}" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="organisationIdentificationRoot">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="organisationIdentification" type="eCH-0097:organisationIdentificationType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
