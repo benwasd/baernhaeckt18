@@ -6,7 +6,7 @@ namespace StiftungFileImporter
     {
         public static string GetQueryUrl(CompanyInfo companyInfo)
         {
-            var canton = GetCantonForLegalSeatId(companyInfo.LegalSeatId);
+            var canton = GetCantonForLegalSeatId(companyInfo.RegisterOfficeId);
             var uid = FormatUid(companyInfo.Uid);
 
             return $"https://{canton}.chregister.ch/cr-portal/auszug/auszug.xhtml?uid={uid}";
@@ -17,7 +17,7 @@ namespace StiftungFileImporter
             return "CHE-105.830.305";
         }
 
-        private static string GetCantonForLegalSeatId(string legalSeatId)
+        private static string GetCantonForLegalSeatId(string registerOfficeId)
         {
             return "BE".ToLower();
         }
