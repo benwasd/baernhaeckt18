@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Contracts;
 using FinancialStatementParser.Core;
+using Nest;
 
 namespace FinancialStatementParser
 {
@@ -16,6 +17,7 @@ namespace FinancialStatementParser
 
             var searchResponse = client.Search<Stiftung>(s => s
                 .From(0)
+                .Size(5000)
             );
 
             var stiftungen = searchResponse.Documents;
@@ -24,17 +26,25 @@ namespace FinancialStatementParser
 
             foreach (var stiftung in stiftungen)
             {
-                count++;
-                Console.WriteLine($"Processing {count}: {stiftung.name}");
-                var result = ProcessFoundation(stiftung.name, stiftung.nameshort, 2017, stiftung.url);
-
-                if (result.Success)
+                try
                 {
-                    stiftung.bilanzsumme = result.BalanceSheetTotal;
-                    stiftung.jahresbericht = result.FinancialStatementUrl.AbsoluteUri;
-                    stiftung.timestamp = DateTime.Now;
+                    count++;
+                    Console.WriteLine($"Processing {count}: {stiftung.name}");
+                    var result = ProcessFoundation(stiftung.name, stiftung.nameshort, 2017, stiftung.url);
 
-                    client.IndexDocument(stiftung);
+                    if (result.Success)
+                    {
+                        var newStiftung = new Stiftung();
+                        newStiftung.id = stiftung.id;
+                        newStiftung.bilanzsumme = result.BalanceSheetTotal;
+                        newStiftung.jahresbericht = result.FinancialStatementUrl.AbsoluteUri;
+
+                        client.Update(new DocumentPath<Stiftung>(newStiftung.id), u => u.Doc(newStiftung));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error bei der Stiftung: {0} {1}", stiftung.name, ex);
                 }
             }
 
@@ -43,6 +53,8 @@ namespace FinancialStatementParser
             // var eichholz = ProcessFoundation("Eichholz", 2017, "stiftung-eichholz.ch");
             // var sieber = ProcessFoundation("Pfarrer Sieber", 2017, "swsieber.ch");
             // var hmsg = ProcessFoundation("HMSG", 2017, "hmsg.ch");
+
+            Console.ReadKey();
         }
 
         private static FoundationResult ProcessFoundation(string foundation, string shortName, int year, string host = null)
@@ -76,6 +88,7 @@ namespace FinancialStatementParser
             }
             catch (Exception ex)
             {
+                Console.WriteLine("ProcessFoundation: {0}", ex);
                 return new FoundationResult { Success = false };
             }
         }

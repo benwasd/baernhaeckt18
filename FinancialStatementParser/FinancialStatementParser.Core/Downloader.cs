@@ -17,6 +17,9 @@ namespace FinancialStatementParser.Core
                 lock (syncObject)
                 {
                     client.DownloadFileAsync(new Uri(urlToPdf), targetFileName, syncObject);
+
+                    Thread.Sleep(8000); // Prevent google from locking us out
+
                     //This would block the thread until download completes
                     Monitor.Wait(syncObject);
                 }

@@ -27,7 +27,7 @@ namespace FinancialStatementParser.Core
 
                 var pageString = webClient.DownloadString(searchUri);
 
-                Thread.Sleep(10000); // Prevent google from locking us out
+                Thread.Sleep(2000); // Prevent google from locking us out
 
                 var uris =
                     new Regex(@"(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?")
