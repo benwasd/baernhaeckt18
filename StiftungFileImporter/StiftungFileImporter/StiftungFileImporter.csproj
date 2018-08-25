@@ -63,6 +63,12 @@
     <Reference Include="AngleSharp, Version=0.9.9.0, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
       <HintPath>..\packages\AngleSharp.0.9.10\lib\net45\AngleSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Elasticsearch.Net, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
+      <HintPath>..\packages\Elasticsearch.Net.6.2.0\lib\net46\Elasticsearch.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Nest, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
+      <HintPath>..\packages\NEST.6.2.0\lib\net46\Nest.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Parser.Html;
 using CefSharp;
 using CefSharp.OffScreen;
+using Contracts;
 using Zefix;
 
 namespace StiftungFileImporter
@@ -16,22 +18,31 @@ namespace StiftungFileImporter
             var zefix = new ZefixSrv();
             Cef.Initialize();
             var browser = new ChromiumWebBrowser();
-
-            var companyNames = new[]
-            {
-                "\"Bibliomedia Schweiz - öffentliche Stiftung\" (BMS)",
-                "Schweizerische Stiftung für Alpine Forschungen", "Pro Silva Helvetica"
-            };
             var x = new System.Threading.ManualResetEvent(false);
+            var elasticClient = ElasticSearchFactory.GetClient();
+            
+            //var companyNames = new[]
+            //{
+            //    "\"Bibliomedia Schweiz - öffentliche Stiftung\" (BMS)",
+            //    "Schweizerische Stiftung für Alpine Forschungen", "Pro Silva Helvetica"
+            //};
 
-            foreach (var companyName in companyNames)
+            var stiftungen = elasticClient.Search<Stiftung>();
+
+            //foreach (var companyName in companyNames)
+            foreach (var stiftung in stiftungen.Documents)
             {
+                var companyName = stiftung.name;
                 var companyInfo = zefix.FindByName(companyName);
                 if (companyInfo == null)
                 {
                     Console.WriteLine($"Nothing found for '{companyName}'");
                     continue;
                 }
+
+                stiftung.handelsregisterUID = companyInfo.Uid;
+                stiftung.handelsregisterCHNR = companyInfo.ChId;
+                stiftung.handelsregisterAmt = companyInfo.RegisterOfficeId;
 
                 EventHandler<LoadingStateChangedEventArgs> loadedStateChanged = async (sender, e) =>
                 {
@@ -56,6 +67,9 @@ namespace StiftungFileImporter
                     var tbody = document.QuerySelector(".personen tbody");
                     if (tbody != null)
                     {
+                        var members =
+                            new List<Stiftungsratsmitglied>(stiftung.stiftungsratsmitglieder ??
+                                                            Enumerable.Empty<Stiftungsratsmitglied>());
                         foreach (var element in tbody.Children)
                         {
                             // unexpected row content or cancelled person
@@ -64,18 +78,23 @@ namespace StiftungFileImporter
                             {
                                 continue;
                             }
-
+                            
                             var person = element.Children[3].TextContent;
                             var function = element.Children[4].TextContent;
                             var permission = element.Children[5].TextContent;
-
+                            
                             Console.WriteLine($"person: {person}; function: {function}; permission: {permission}");
 
-                            if (function == "auditor")
+                            // Could be a company -> exclude
+                            if (function != "auditor")
                             {
-                                // Could be a company
+                                var member = new Stiftungsratsmitglied { name = person, funktion = function, berechtigung = permission };
+                                members.Add(member);
                             }
+
                         }
+
+                        stiftung.stiftungsratsmitglieder = members.ToArray();
                     }
 
                     x.Set();

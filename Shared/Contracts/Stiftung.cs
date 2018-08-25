@@ -35,9 +35,22 @@ namespace Contracts
 
         public string handelsregisterAmt { get; set; }
 
+        public string kanton { get; set; }
+
         public string url { get; set; }
+
+        public Stiftungsratsmitglied[] stiftungsratsmitglieder { get; set; }
 
         [Date(Name = "@timestamp")]
         public DateTime timestamp { get; set; }
+    }
+
+    public class Stiftungsratsmitglied
+    {
+        public string name { get; set; }
+
+        public string funktion { get; set; }
+
+        public string berechtigung { get; set; }
     }
 }
