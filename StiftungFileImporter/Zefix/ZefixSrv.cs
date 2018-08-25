@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using System.ServiceModel.Security;
-using Zefix.ZefixReference;
+﻿using Zefix.ZefixReference;
 
 namespace Zefix
 {
@@ -12,7 +10,6 @@ namespace Zefix
             client.ClientCredentials.UserName.UserName = "UserName";
             client.ClientCredentials.UserName.Password = "Password";
 
-            //var response = client.GetByUidFull(new getByUidRequestType { uid = "110389869" });
             var response = client.SearchByName(new searchByNameRequest {name = name});
             var result = response.Item as shortResponseResult;
             if (result == null || result.companyInfo.Length <= 0)

@@ -21,15 +21,8 @@ namespace StiftungFileImporter
             var x = new System.Threading.ManualResetEvent(false);
             var elasticClient = ElasticSearchFactory.GetClient();
 
-            //var companyNames = new[]
-            //{
-            //    "\"Bibliomedia Schweiz - öffentliche Stiftung\" (BMS)",
-            //    "Schweizerische Stiftung für Alpine Forschungen", "Pro Silva Helvetica"
-            //};
-
             var stiftungen = elasticClient.Search<Stiftung>();
 
-            //foreach (var companyName in companyNames)
             foreach (var stiftung in stiftungen.Documents)
             {
                 var companyName = stiftung.name;
