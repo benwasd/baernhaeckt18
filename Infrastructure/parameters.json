@@ -6,7 +6,7 @@
             "value": "6.3.1"
         },
         "esClusterName": {
-            "value": "baernhaeckt"
+            "value": "bhcn"
         },
         "azureCloudPlugin": {
             "value": "No"
@@ -57,7 +57,7 @@
             "value": 0
         },
         "loadBalancerType": {
-            "value": "internal"
+            "value": "external"
         },
         "vNetNewOrExisting": {
             "value": "new"
@@ -90,7 +90,7 @@
             "value": "Yes"
         },
         "vmSizeKibana": {
-            "value": "Standard_DS2_v2"
+            "value": "Standard_D1_v2"
         },
         "kibanaKeyBlob": {
             "value": null
@@ -126,7 +126,7 @@
             "value": "Yes"
         },
         "vmHostNamePrefix": {
-            "value": "bhcn"
+            "value": "bhcn-"
         },
         "vmClientNodeCount": {
             "value": 0
