@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using Contracts;
 using FinancialStatementParser.Core;
@@ -11,23 +12,27 @@ namespace FinancialStatementParser
         {
             Initialize();
 
-            /*var client = ElasticSearchFactory.GetClient();
+            var client = ElasticSearchFactory.GetClient();
 
             var searchResponse = client.Search<Stiftung>(s => s
                 .From(0)
-                .Size(10)
+                .Size(20)
             );
 
             var stiftungen = searchResponse.Documents;
 
             foreach (var stiftung in stiftungen)
             {
-                // stiftung.url;
-                // stiftung.name;
+                var result = ProcessFoundation(stiftung.name, stiftung.nameshort, 2017, stiftung.url);
 
-                stiftung.bilanzsumme = 0;
-                stiftung.jahresbericht = "https://stiftung.com/2017/jahresrechnung.pdf";
-            }*/
+                if (result.Success)
+                {
+                    stiftung.bilanzsumme = result.BalanceSheetTotal;
+                    stiftung.jahresbericht = result.FinancialStatementUrl.AbsoluteUri;
+
+                    //client.Update();
+                }
+            }
 
             // Manual:
             // var rega = ProcessFoundation("Rega", 2017, "rega.ch");
@@ -36,25 +41,39 @@ namespace FinancialStatementParser
             // var hmsg = ProcessFoundation("HMSG", 2017, "hmsg.ch");
         }
 
-        private static decimal? ProcessFoundation(string foundation, int year, string host = null)
+        private static FoundationResult ProcessFoundation(string foundation, string shortName, int year, string host = null)
         {
+            var downloadUri = AppDomain.CurrentDomain.BaseDirectory + @"\Data\" + $"{shortName}_{year}.pdf";
+
             var result = Crawler.FindFinancialStatement(foundation, year, host).ToArray();
 
-            var jahresRechnung = result.FirstOrDefault(r => r.AbsoluteUri.Contains("rechnung"));
-            if (jahresRechnung == null)
+            var jahresRechnungUrl = result.FirstOrDefault(r => r.AbsoluteUri.Contains("rechnung")) ?? result.FirstOrDefault();
+
+            if (jahresRechnungUrl == null)
             {
-                jahresRechnung = result.FirstOrDefault();
+                return new FoundationResult { Success = false };
             }
 
-            if (jahresRechnung != null)
+            if (!File.Exists(downloadUri)) // Don't download the file if we already have it
             {
-                Downloader.Download(jahresRechnung.AbsoluteUri, AppDomain.CurrentDomain.BaseDirectory + @"\Data",
-                    $"{foundation}_{year}.pdf");
-
-                return PdfParser.FindTotalActiva(AppDomain.CurrentDomain.BaseDirectory + @"\Data\" + $"{foundation}_{year}.pdf");
+                Downloader.Download(jahresRechnungUrl.AbsoluteUri, downloadUri);
             }
 
-            return null;
+            try
+            {
+                var balanceSheetTotal = PdfParser.FindTotalActiva(downloadUri, year).GetValueOrDefault();
+
+                return new FoundationResult
+                {
+                    FinancialStatementUrl = jahresRechnungUrl,
+                    BalanceSheetTotal = balanceSheetTotal,
+                    Success = true
+                };
+            }
+            catch (Exception)
+            {
+                return new FoundationResult { Success = false };
+            }
         }
 
         private static void Initialize()
