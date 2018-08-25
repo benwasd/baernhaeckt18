@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 
 using System.Text.RegularExpressions;
+using System.Threading;
 using Google.Apis.Customsearch.v1;
 using Google.Apis.Customsearch.v1.Data;
 using Google.Apis.Services;
@@ -12,19 +13,21 @@ namespace FinancialStatementParser.Core
 {
     public class Crawler
     {
-        public static IEnumerable<Uri> FindFinancialStatement(string foundation, int year, string host= null)
+        public static IEnumerable<Uri> FindFinancialStatement(string foundation, int year, string host = null)
         {
             var result = new List<Uri>();
 
             using (var webClient = new WebClient())
             {
-                var searchUri = host == null ? $"https://www.google.ch/search?q={foundation}+pdf+jahresrechnung+{year}" : $"https://www.google.ch/search?q=site:{host}+pdf+jahresrechnung+{year}";
+                var searchUri = string.IsNullOrWhiteSpace(host)? $"https://www.google.ch/search?q={foundation}+pdf+jahresrechnung+{year}" : $"https://www.google.ch/search?q=site:{host}+pdf+jahresrechnung+{year}";
                 if (!foundation.ToLower().Contains("wwf"))
                 {
                     searchUri += "+-wwf";
                 }
 
                 var pageString = webClient.DownloadString(searchUri);
+
+                Thread.Sleep(10000); // Prevent google from locking us out
 
                 var uris =
                     new Regex(@"(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?")
