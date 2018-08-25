@@ -1,7 +1,7 @@
-﻿using Contracts;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Nest;
+
+using Contracts;
 
 namespace ConsoleApp1
 {
@@ -9,11 +9,7 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            var connection = new ConnectionSettings(new Uri("http://lb-agxv47bobldeo.westeurope.cloudapp.azure.com:9200/"));
-            connection.BasicAuthentication("elastic", "***");
-            connection.DefaultMappingFor<Stiftung>(s => s.IndexName("stiftungen"));
-
-            var client = new ElasticClient(connection);
+            var client = ElasticSearchFactory.GetClient();
 
             foreach (var stiftung in GetSamples())
             {
@@ -38,6 +34,7 @@ namespace ConsoleApp1
         {
             yield return new Stiftung
             {
+                id = new Guid("8dcdfa9b-b860-4e9e-a81a-1ed57cc65f60"),
                 handelsregisterUID = "CHE-112.566.591",
                 name = "Cooperaxion, Stiftung für nachhaltige Entwicklung und interkulturellen Austausch",
                 adresse = "Neue Winterthurerstrasse 26, 8304 Wallisellen",
@@ -47,6 +44,7 @@ namespace ConsoleApp1
 
             yield return new Stiftung
             {
+                id = new Guid("8dcdfa9b-b860-4e9e-a81a-1ed57cc65f61"),
                 handelsregisterUID = "CHE-111.788.947",
                 name = "Stiftung Brot für alle",
                 adresse = "Bürenstrasse 12, 3007 Bern",
@@ -56,6 +54,7 @@ namespace ConsoleApp1
 
             yield return new Stiftung
             {
+                id = new Guid("8dcdfa9b-b860-4e9e-a81a-1ed57cc65f62"),
                 handelsregisterUID = "CHE-109.697.548",
                 name = "Fondation Lascaux",
                 adresse = "Zürichstrasse 42, 8306 Brüttisellen",
