@@ -20,7 +20,7 @@ namespace StiftungFileImporter
             var browser = new ChromiumWebBrowser();
             var x = new System.Threading.ManualResetEvent(false);
             var elasticClient = ElasticSearchFactory.GetClient();
-            
+
             //var companyNames = new[]
             //{
             //    "\"Bibliomedia Schweiz - öffentliche Stiftung\" (BMS)",
@@ -78,11 +78,11 @@ namespace StiftungFileImporter
                             {
                                 continue;
                             }
-                            
+
                             var person = element.Children[3].TextContent;
                             var function = element.Children[4].TextContent;
                             var permission = element.Children[5].TextContent;
-                            
+
                             Console.WriteLine($"person: {person}; function: {function}; permission: {permission}");
 
                             // Could be a company -> exclude
@@ -109,6 +109,9 @@ namespace StiftungFileImporter
                 x.Reset();
 
                 browser.LoadingStateChanged -= loadedStateChanged;
+
+                stiftung.timestamp = DateTime.Now;
+                elasticClient.IndexDocument(stiftung);
             }
 
             Cef.Shutdown();
