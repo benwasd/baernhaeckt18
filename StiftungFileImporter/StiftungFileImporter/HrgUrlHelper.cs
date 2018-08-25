@@ -1,4 +1,5 @@
-﻿using Zefix;
+﻿using System.Linq;
+using Zefix;
 
 namespace StiftungFileImporter
 {
@@ -14,7 +15,13 @@ namespace StiftungFileImporter
 
         private static string FormatUid(string uid)
         {
-            return "CHE-105.830.305";
+            var part1 = string.Concat(uid.Skip(0).Take(3));
+            var part2 = string.Concat(uid.Skip(3).Take(3));
+            var part3 = string.Concat(uid.Skip(6).Take(3));
+
+            var s = $"CHE-{part1}.{part2}.{part3}";
+
+            return s;
         }
 
         private static string GetCantonForLegalSeatId(string registerOfficeId)
