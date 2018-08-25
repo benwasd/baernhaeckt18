@@ -16,21 +16,25 @@ namespace FinancialStatementParser
 
             var searchResponse = client.Search<Stiftung>(s => s
                 .From(0)
-                .Size(20)
             );
 
             var stiftungen = searchResponse.Documents;
 
+            var count = 0;
+
             foreach (var stiftung in stiftungen)
             {
+                count++;
+                Console.WriteLine($"Processing {count}: {stiftung.name}");
                 var result = ProcessFoundation(stiftung.name, stiftung.nameshort, 2017, stiftung.url);
 
                 if (result.Success)
                 {
                     stiftung.bilanzsumme = result.BalanceSheetTotal;
                     stiftung.jahresbericht = result.FinancialStatementUrl.AbsoluteUri;
+                    stiftung.timestamp = DateTime.Now;
 
-                    //client.Update();
+                    client.IndexDocument(stiftung);
                 }
             }
 
@@ -70,7 +74,7 @@ namespace FinancialStatementParser
                     Success = true
                 };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new FoundationResult { Success = false };
             }
