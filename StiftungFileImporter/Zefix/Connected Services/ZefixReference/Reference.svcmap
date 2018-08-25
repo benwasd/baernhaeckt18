@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="d3338b77-61f2-43eb-9c00-428d4d7d89ea" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="C:\Users\at\Documents\Hackaton2018\GS-EDI - Stiftungsaufsicht\Zefix\view-source_www.e-service.admin.ch_ws-zefix-1.7_ZefixService_wsdl.wsdl" Protocol="file" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="eCH-0010-4-0.xsd" MetadataType="Schema" ID="6fe8b37c-d62a-4a60-bd63-d48ec8b98f46" SourceId="1" SourceUrl="http://www.ech.ch/xmlns/eCH-0010/4/eCH-0010-4-0.xsd" />
+    <MetadataFile FileName="xml.xsd" MetadataType="Schema" ID="9dbb6ef1-b2c1-42c6-993f-641c732b0384" SourceId="1" SourceUrl="http://www.w3.org/2001/xml.xsd" />
+    <MetadataFile FileName="eCH-0097-2-0.xsd" MetadataType="Schema" ID="55cd637f-2c21-432d-99f3-aa3a84116dcd" SourceId="1" SourceUrl="http://www.ech.ch/xmlns/eCH-0097/2/eCH-0097-2-0.xsd" />
+    <MetadataFile FileName="view-source_www.wsdl" MetadataType="Wsdl" ID="7a9c4d55-9e3a-4ce3-a1ba-c2725780569d" SourceId="1" SourceUrl="file:///C:/Users/at/Documents/Hackaton2018/GS-EDI - Stiftungsaufsicht/Zefix/view-source_www.e-service.admin.ch_ws-zefix-1.7_ZefixService_wsdl.wsdl" />
+    <MetadataFile FileName="view-source_www.xsd" MetadataType="Schema" ID="1f9b2c4d-37fa-40f1-83b9-c63d9f51d965" SourceId="1" SourceUrl="file:///C:/Users/at/Documents/Hackaton2018/GS-EDI - Stiftungsaufsicht/Zefix/view-source_www.e-service.admin.ch_ws-zefix-1.7_ZefixService_xsd=1.xml" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
