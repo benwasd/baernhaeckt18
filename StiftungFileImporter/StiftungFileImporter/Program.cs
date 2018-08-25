@@ -36,6 +36,7 @@ namespace StiftungFileImporter
                 stiftung.handelsregisterUID = companyInfo.Uid;
                 stiftung.handelsregisterCHNR = companyInfo.ChId;
                 stiftung.handelsregisterAmt = companyInfo.RegisterOfficeId;
+                stiftung.kanton = companyInfo.CantonIso;
 
                 EventHandler<LoadingStateChangedEventArgs> loadedStateChanged = async (sender, e) =>
                 {

@@ -11,7 +11,7 @@ namespace Zefix
             client.ClientCredentials.UserName.Password = "Password";
 
             var companyName = GetNameForSearch(name);
-            var response = client.SearchByName(new searchByNameRequest {name = companyName });
+            var response = client.SearchByName(new searchByNameRequest { name = companyName });
             var result = response.Item as shortResponseResult;
             if (result?.companyInfo == null || result.companyInfo.Length <= 0)
             {
@@ -25,7 +25,8 @@ namespace Zefix
                 LegalSeatId = company.legalSeatId,
                 RegisterOfficeId = company.registerOfficeId,
                 Uid = company.uid,
-                ChId = company.chid
+                ChId = company.chid,
+                Canton = CantonMapper.MapByRegisterOfficeId(company.registerOfficeId)
             };
         }
 
