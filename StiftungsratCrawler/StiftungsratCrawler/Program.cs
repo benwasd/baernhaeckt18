@@ -11,7 +11,7 @@ using Contracts;
 using Nest;
 using Zefix;
 
-namespace StiftungFileImporter
+namespace StiftungsratCrawler
 {
     class Program
     {
