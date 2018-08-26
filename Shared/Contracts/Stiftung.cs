@@ -29,6 +29,8 @@ namespace Contracts
 
         public decimal bilanzsumme { get; set; }
 
+        public decimal? bilanzsumme26 { get; set; }
+
         public string handelsregisterUID { get; set; }
 
         public string handelsregisterCHNR { get; set; }

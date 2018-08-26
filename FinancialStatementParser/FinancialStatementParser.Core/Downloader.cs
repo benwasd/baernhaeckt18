@@ -1,34 +1,26 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Net;
-using System.Threading;
+using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace FinancialStatementParser.Core
 {
     public class Downloader
     {
-        public static void Download(string urlToPdf, string targetFileName)
+        public static async Task DownloadAsync(string urlToPdf, string targetFileName)
         {
-            using (var client = new WebClient())
+            using (var client = new HttpClient())
             {
-                client.DownloadFileCompleted += HandleDownloadComplete;
+                var response = await client.GetAsync(urlToPdf);
 
-                var syncObject = new Object();
-                lock (syncObject)
+                if (response.IsSuccessStatusCode)
                 {
-                    client.DownloadFileAsync(new Uri(urlToPdf), targetFileName, syncObject);
-                    //This would block the thread until download completes
-                    Monitor.Wait(syncObject);
+                    File.WriteAllBytes(targetFileName, await response.Content.ReadAsByteArrayAsync());
                 }
-            }
-        }
-
-        public static void HandleDownloadComplete(object sender, AsyncCompletedEventArgs e)
-        {
-            lock (e.UserState)
-            {
-                //releases blocked thread
-                Monitor.Pulse(e.UserState);
+                else
+                {
+                    Console.WriteLine("Error {0}, when accessing {1}", response.StatusCode, urlToPdf);
+                }
             }
         }
     }

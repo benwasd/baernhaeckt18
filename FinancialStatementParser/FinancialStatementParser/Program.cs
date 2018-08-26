@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Contracts;
 using FinancialStatementParser.Core;
+using Nest;
 
 namespace FinancialStatementParser
 {
@@ -10,12 +12,18 @@ namespace FinancialStatementParser
     {
         static void Main(string[] args)
         {
+            MainAsync(args).Wait();
+        }
+
+        static async Task MainAsync(string[] args)
+        {
             Initialize();
 
             var client = ElasticSearchFactory.GetClient();
 
             var searchResponse = client.Search<Stiftung>(s => s
                 .From(0)
+                .Size(5000)
             );
 
             var stiftungen = searchResponse.Documents;
@@ -24,17 +32,26 @@ namespace FinancialStatementParser
 
             foreach (var stiftung in stiftungen)
             {
-                count++;
-                Console.WriteLine($"Processing {count}: {stiftung.name}");
-                var result = ProcessFoundation(stiftung.name, stiftung.nameshort, 2017, stiftung.url);
-
-                if (result.Success)
+                try
                 {
-                    stiftung.bilanzsumme = result.BalanceSheetTotal;
-                    stiftung.jahresbericht = result.FinancialStatementUrl.AbsoluteUri;
-                    stiftung.timestamp = DateTime.Now;
+                    count++;
+                    Console.WriteLine($"Processing {count}: {stiftung.name}");
+                    var result = await ProcessFoundationAsync(stiftung.name, stiftung.nameshort, 2017, stiftung.url);
 
-                    client.IndexDocument(stiftung);
+                    if (result.Success)
+                    {
+                        var newStiftung = new Stiftung();
+                        newStiftung.id = stiftung.id;
+                        newStiftung.bilanzsumme26 = result.BalanceSheetTotal;
+                        newStiftung.jahresbericht = result.FinancialStatementUrl.AbsoluteUri;
+                        newStiftung.timestamp = DateTime.Now;
+
+                        client.Update(new DocumentPath<Stiftung>(newStiftung.id), u => u.Doc(newStiftung));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error bei der Stiftung: {0} {1}", stiftung.name, ex);
                 }
             }
 
@@ -43,9 +60,11 @@ namespace FinancialStatementParser
             // var eichholz = ProcessFoundation("Eichholz", 2017, "stiftung-eichholz.ch");
             // var sieber = ProcessFoundation("Pfarrer Sieber", 2017, "swsieber.ch");
             // var hmsg = ProcessFoundation("HMSG", 2017, "hmsg.ch");
+
+            Console.ReadKey();
         }
 
-        private static FoundationResult ProcessFoundation(string foundation, string shortName, int year, string host = null)
+        private static async Task<FoundationResult> ProcessFoundationAsync(string foundation, string shortName, int year, string host = null)
         {
             var downloadUri = AppDomain.CurrentDomain.BaseDirectory + @"\Data\" + $"{shortName}_{year}.pdf";
 
@@ -60,7 +79,7 @@ namespace FinancialStatementParser
 
             if (!File.Exists(downloadUri)) // Don't download the file if we already have it
             {
-                Downloader.Download(jahresRechnungUrl.AbsoluteUri, downloadUri);
+                await Downloader.DownloadAsync(jahresRechnungUrl.AbsoluteUri, downloadUri);
             }
 
             try
@@ -76,6 +95,7 @@ namespace FinancialStatementParser
             }
             catch (Exception ex)
             {
+                Console.WriteLine("ProcessFoundation: {0}", ex);
                 return new FoundationResult { Success = false };
             }
         }
