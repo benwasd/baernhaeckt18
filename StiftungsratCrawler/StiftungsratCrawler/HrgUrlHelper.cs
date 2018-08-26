@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Zefix;
 
-namespace StiftungFileImporter
+namespace StiftungsratCrawler
 {
     public class HrgUrlHelper
     {
