@@ -23,10 +23,13 @@ namespace StiftungFileImporter
             var browserManualResetEvent = new ManualResetEvent(false);
             var elasticClient = ElasticSearchFactory.GetClient();
 
+            // Get all Stiftungen from store
             var stiftungen = elasticClient.Search<Stiftung>(s => s.Size(5000));
 
             foreach (var stiftung in stiftungen.Documents)
             {
+                // Try to find the Stiftung from Zefix (get some basic information)
+                // The Delays and Sleeps are necessary to have not more than 200 requests in 10 minutes to Zefix. Otherwise the account will be locked!
                 var companyName = stiftung.name;
                 var companyInfo = zefix.FindByName(companyName);
                 if (companyInfo == null)
@@ -48,6 +51,7 @@ namespace StiftungFileImporter
 
                 var hadDelay = false;
 
+                // Try to find data from Handelsregister -> tricky
                 EventHandler<LoadingStateChangedEventArgs> loadedStateChanged = async (sender, e) =>
                 {
                     if (e.IsLoading)
@@ -55,6 +59,10 @@ namespace StiftungFileImporter
                         return;
                     }
 
+
+                    // Hard to get the final HTML view due to the used techonlogies of the Handlesregister solution(s).
+                    // With the delay we give the site time enough to load additional view-parts
+                    // @Handelsregister: Please fix your SOAP service!
                     Console.WriteLine($"Loading for company '{companyName}'");
                     await Task.Delay(5000);
 
@@ -65,7 +73,7 @@ namespace StiftungFileImporter
 
                     var siteSource = await sourceVisitor.Task;
 
-                    // AngleSharp
+                    // AngleSharp to parse HTML -> grab the current members of the Stiftungsrat
                     var config = Configuration.Default.WithCss();
                     var parser = new HtmlParser(config);
                     var document = parser.Parse(siteSource);
@@ -83,9 +91,9 @@ namespace StiftungFileImporter
                                 continue;
                             }
 
-                            var person = element.Children[3].TextContent;
-                            var function = element.Children[4].TextContent;
-                            var permission = element.Children[5].TextContent;
+                            var person = element.Children[3].TextContent?.Trim();
+                            var function = element.Children[4].TextContent?.Trim();
+                            var permission = element.Children[5].TextContent?.Trim();
 
                             Console.WriteLine($"person: {person}; function: {function}; permission: {permission}");
 
@@ -106,6 +114,7 @@ namespace StiftungFileImporter
 
                 browser.LoadingStateChanged += loadedStateChanged;
 
+                // The Handelsregister solutions has different URLs per canton
                 var address = HrgUrlHelper.GetQueryUrl(companyInfo);
                 browser.Load(address);
 
