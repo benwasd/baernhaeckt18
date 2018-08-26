@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2003
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StiftungFileImporter", "StiftungFileImporter\StiftungFileImporter.csproj", "{B2F40D68-0644-47AF-9F29-5AE5F004E6AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StiftungsratCrawler", "StiftungsratCrawler\StiftungsratCrawler.csproj", "{B2F40D68-0644-47AF-9F29-5AE5F004E6AE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zefix", "Zefix\Zefix.csproj", "{2F9EF3C3-035E-4333-8C72-5EA9A79E71E9}"
 EndProject

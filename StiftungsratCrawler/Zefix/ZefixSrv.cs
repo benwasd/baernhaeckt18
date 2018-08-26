@@ -54,8 +54,10 @@ namespace Zefix
                 return string.Empty;
             }
 
+            // Is an escape pattern in the export -> remove for search
             name = name.Replace("<(>&<)>", "*");
 
+            // Sometimes, the translated name(s) are appendend in the german name field, surrounded by brackets.
             var bracketPosition = name.IndexOf('(');
             if (bracketPosition > 1)
             {
