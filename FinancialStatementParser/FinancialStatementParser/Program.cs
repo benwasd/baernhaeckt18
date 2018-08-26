@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Contracts;
 using FinancialStatementParser.Core;
 using Nest;
@@ -10,6 +11,11 @@ namespace FinancialStatementParser
     class Program
     {
         static void Main(string[] args)
+        {
+            MainAsync(args).Wait();
+        }
+
+        static async Task MainAsync(string[] args)
         {
             Initialize();
 
@@ -30,14 +36,15 @@ namespace FinancialStatementParser
                 {
                     count++;
                     Console.WriteLine($"Processing {count}: {stiftung.name}");
-                    var result = ProcessFoundation(stiftung.name, stiftung.nameshort, 2017, stiftung.url);
+                    var result = await ProcessFoundationAsync(stiftung.name, stiftung.nameshort, 2017, stiftung.url);
 
                     if (result.Success)
                     {
                         var newStiftung = new Stiftung();
                         newStiftung.id = stiftung.id;
-                        newStiftung.bilanzsumme = result.BalanceSheetTotal;
+                        newStiftung.bilanzsumme26 = result.BalanceSheetTotal;
                         newStiftung.jahresbericht = result.FinancialStatementUrl.AbsoluteUri;
+                        newStiftung.timestamp = DateTime.Now;
 
                         client.Update(new DocumentPath<Stiftung>(newStiftung.id), u => u.Doc(newStiftung));
                     }
@@ -57,7 +64,7 @@ namespace FinancialStatementParser
             Console.ReadKey();
         }
 
-        private static FoundationResult ProcessFoundation(string foundation, string shortName, int year, string host = null)
+        private static async Task<FoundationResult> ProcessFoundationAsync(string foundation, string shortName, int year, string host = null)
         {
             var downloadUri = AppDomain.CurrentDomain.BaseDirectory + @"\Data\" + $"{shortName}_{year}.pdf";
 
@@ -72,7 +79,7 @@ namespace FinancialStatementParser
 
             if (!File.Exists(downloadUri)) // Don't download the file if we already have it
             {
-                Downloader.Download(jahresRechnungUrl.AbsoluteUri, downloadUri);
+                await Downloader.DownloadAsync(jahresRechnungUrl.AbsoluteUri, downloadUri);
             }
 
             try
