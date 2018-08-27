@@ -1,23 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Contracts;
 
-namespace ConsoleApp1
+namespace ContractUtils
 {
-    class Program
+    public class SampleData
     {
-        static void Main()
-        {
-            // SeedSamples();
-            // MapTags();
-        }
-
-        static void SeedSamples()
+        public void SeedSamples()
         {
             var client = ElasticSearchFactory.GetClient();
 
-            foreach (var stiftung in GetSamples())
+            foreach (var stiftung in this.GetSamples())
             {
                 var indexResponse = client.IndexDocument(stiftung);
             }
@@ -36,7 +29,7 @@ namespace ConsoleApp1
             var stiftungen = searchResponse.Documents;
         }
 
-        private static IEnumerable<Stiftung> GetSamples()
+        private IEnumerable<Stiftung> GetSamples()
         {
             yield return new Stiftung
             {
@@ -67,79 +60,6 @@ namespace ConsoleApp1
                 zweck = "Die Stiftung bezweckt die Vermittlung, Erweiterung und Erforschung von bisher unbeachtet gebliebenen und neuen Erkenntnissen der Wirkung von Farben auf die geistig-spirituelle Entwicklung des Menschen, sowie deren Relevanz für eine neue, ganzheitliche Zusammenschau von Kultur, Wissenschaft und Wirtschaft. Grundlage sämtlicher Aktivitäten ist die Vorstellung eines einheitlichen, lebendigen Universums als Farb- und Klangschöpfung, basierend auf den zwölf Farben der kosmischen Ordnung. Es werden Vorträge und Seminare veranstaltet, die diese Farben in das Zentrum menschlicher Wahrnehmungs- und Bewusstseinsprozesse stellen. Darüber hinaus werden durch Dokumentation, Pflege und Erhaltung sowie öffentlich zugänglichen Präsentationen (Ausstellungen) bereits existierende Manifestationen in Kunst und Wissenschaft und ihren intermedialen Ausdrucksformen veranschaulicht. Die Stiftung verfolgt ihren Zweck als gemeinnützige, nicht auf Gewinn ausgerichtete Institution und sie verfolgt weder Erwerbs-, Selbsthilfe- noch kommerzielle Zwecke. Sie kann auf eigene Rechnung oder treuhänderisch Finanzgeschäfte aller Art eingehen sowie Grundstücke erwerben, verwalten und veräussern. Das Stiftungsvermögen und allfällige Erträge daraus dürfen nur für die obenstehenden oder diesen verwandte Zwecke verwendet werden.",
                 jahresbericht = "http://www.cooperaxion.org/_wp/wp-content/uploads/2012/05/Cooperaxion_Jahresbericht_2016_compr.pdf"
             };
-        }
-
-        static void MapTags()
-        {
-            var client = ElasticSearchFactory.GetClient();
-
-            var searchResponse = client.Search<Stiftung>(s => s
-                .From(0)
-                .Size(10000)
-            );
-
-            var stiftungen = searchResponse.Documents;
-
-            var tags = stiftungen
-                .Where(s => s.tags != null)
-                .SelectMany(
-                    s => s.tags
-                        .Where(FilterTag)
-                        .Select(t => new Tag { kanton = s.kanton, name = t, stiftungId = s.id, stiftungName = s.name })
-                )
-                .Where(t => t != null);
-
-            foreach (var tag in tags)
-            {
-                client.IndexDocument(tag);
-            }
-        }
-
-        private static bool FilterTag(string tag)
-        {
-            var lowerTag = tag.ToLowerInvariant();
-
-            var toRemove = lowerTag.Contains("stiftung")
-                        || lowerTag.Contains("Stiftung")
-                        || lowerTag.Contains("Unterstützung")
-                        || lowerTag.Contains("Förderung")
-                        || lowerTag.Contains("Schweiz")
-                        || lowerTag.Contains("but lucratif")
-                        || lowerTag.Contains("Zweck der Stiftung")
-                        || lowerTag.Contains("fondation")
-                        || lowerTag.Contains("but")
-                        || lowerTag.Contains("Institutionen")
-                        || lowerTag.Contains("Rahmen")
-                        || lowerTag.Contains("Suisse")
-                        || lowerTag.Contains("Gewinn")
-                        || lowerTag.Contains("Fondation")
-                        || lowerTag.Contains("Organisationen")
-                        || lowerTag.Contains("Projekten")
-                        || lowerTag.Contains("Projekte")
-                        || lowerTag.Contains("éducation")
-                        || lowerTag.Contains("ZGB")
-                        || lowerTag.Contains("Projekten")
-                        || lowerTag.Contains("Projekte")
-                        || lowerTag.Contains("éducation")
-                        || lowerTag.Contains("ZGB")
-                        || lowerTag.Contains("Erwerbszweck")
-                        || lowerTag.Contains("particulier")
-                        || lowerTag.Contains("rement")
-                        || lowerTag.Contains("Personen")
-                        || lowerTag.Contains("caract")
-                        || lowerTag.Contains("Sinne")
-                        || lowerTag.Contains("Stiftungsrat")
-                        || lowerTag.Contains("Stifter")
-                        || lowerTag.Contains("Zwecksetzung")
-                        || lowerTag.Contains("keinerlei Erwerbszweck")
-                        || lowerTag.Contains("monde")
-                        || lowerTag.Contains("Stifter")
-                        || lowerTag.Contains("Stiftungszwecks")
-                        || lowerTag.Contains("recherche")
-                        || lowerTag.Contains("intér")
-                        || lowerTag.Contains("Durchführung");
-
-            return toRemove == false;
         }
     }
 }

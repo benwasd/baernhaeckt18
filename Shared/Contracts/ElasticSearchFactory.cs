@@ -19,6 +19,7 @@ namespace Contracts
             connection.BasicAuthentication("elastic", "Abc1234VUnit");
             connection.DefaultMappingFor<Stiftung>(m => m.IndexName("stiftungen").IdProperty(s => s.id));
             connection.DefaultMappingFor<Tag>(m => m.IndexName("tags").IdProperty(s => s.id));
+            connection.DefaultMappingFor<Stiftungsrat>(m => m.IndexName("stiftungsraete").IdProperty(s => s.id));
 
             return new ElasticClient(connection);
         }
